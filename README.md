@@ -1,1 +1,1 @@
-# EwoksDask: Pypushflow binding for Dask
+# EwoksDask: Dask binding for Ewoks
