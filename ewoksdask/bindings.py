@@ -30,7 +30,7 @@ def convert_graph(ewoksgraph, varinfo):
     return daskgraph
 
 
-def job(graph, representation=None, varinfo=None, scheduler=None):
+def execute_graph(graph, representation=None, varinfo=None, scheduler=None):
     ewoksgraph = load_graph(source=graph, representation=representation)
     if ewoksgraph.is_cyclic:
         raise RuntimeError("Dask can only execute DAGs")

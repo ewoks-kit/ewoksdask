@@ -15,7 +15,7 @@ def local_scheduler(**kw):
 
 def slurm_scheduler(**kw):
     # Run this on slurm-access
-    # Parameters for each job:
+    # Parameters for each execute_graph:
     kw.setdefault("project", "esrftaskgraph")
     kw.setdefault("walltime", "01:00:00")
     kw.setdefault("cores", 2)
