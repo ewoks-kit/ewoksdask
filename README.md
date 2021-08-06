@@ -1,6 +1,6 @@
 # EwoksDask: Dask binding for Ewoks
 
-ewoskdask provides distributed task scheduling for Ewoks workflows.
+ewoksdask provides distributed task scheduling for Ewoks workflows.
 
 ## Install
 
