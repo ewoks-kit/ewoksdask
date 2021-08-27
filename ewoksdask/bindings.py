@@ -95,7 +95,7 @@ def execute_graph(
     if results_of_all_nodes:
         nodes = list(ewoksgraph.graph.nodes)
     else:
-        nodes = list(ewoksgraph.result_nodes())
+        nodes = list(ewoksgraph.end_nodes())
 
     if scheduler is None:
         results = sequential_scheduler(daskgraph, nodes)
