@@ -79,8 +79,8 @@ def convert_graph(ewoksgraph, **execute_options):
 def execute_graph(
     graph,
     scheduler=None,
-    log_task_execution=False,
-    results_of_all_nodes=False,
+    log_task_execution: Optional[bool] = False,
+    results_of_all_nodes: Optional[bool] = False,
     load_options: Optional[dict] = None,
     **execute_options
 ):
