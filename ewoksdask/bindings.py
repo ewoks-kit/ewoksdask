@@ -3,7 +3,6 @@ https://docs.dask.org/en/latest/scheduler-overview.html
 """
 
 import json
-import logging
 from typing import Optional
 from dask.distributed import Client
 from dask.threaded import get as multithreading_scheduler
@@ -15,9 +14,6 @@ from ewokscore.inittask import instantiate_task
 from ewokscore.inittask import add_dynamic_inputs
 from ewokscore.graph import ewoks_jsonload_hook
 from ewokscore.node import get_node_label
-
-
-logger = logging.getLogger(__name__)
 
 
 def execute_task(execinfo, *inputs):
@@ -33,27 +29,7 @@ def execute_task(execinfo, *inputs):
         varinfo=execinfo["varinfo"],
     )
 
-    try:
-        task.execute()
-    except Exception as e:
-        if execinfo["enable_logging"]:
-            logger.error(
-                "\nEXECUTE %s %s\n INPUTS: %s\n ERROR: %s",
-                execinfo["node_label"],
-                task,
-                task.input_values,
-                e,
-            )
-        raise
-
-    if execinfo["enable_logging"] or True:
-        logger.info(
-            "\nEXECUTE %s %s\n INPUTS: %s\n OUTPUTS: %s",
-            execinfo["node_label"],
-            task,
-            task.input_values,
-            task.output_values,
-        )
+    task.execute()
 
     return task.output_transfer_data
 
@@ -79,7 +55,6 @@ def convert_graph(ewoksgraph, **execute_options):
 def execute_graph(
     graph,
     scheduler=None,
-    log_task_execution: Optional[bool] = False,
     results_of_all_nodes: Optional[bool] = False,
     load_options: Optional[dict] = None,
     **execute_options
@@ -91,9 +66,7 @@ def execute_graph(
         raise RuntimeError("Dask can only execute DAGs")
     if ewoksgraph.has_conditional_links:
         raise RuntimeError("Dask cannot handle conditional links")
-    daskgraph = convert_graph(
-        ewoksgraph, enable_logging=log_task_execution, **execute_options
-    )
+    daskgraph = convert_graph(ewoksgraph, **execute_options)
 
     if results_of_all_nodes:
         nodes = list(ewoksgraph.graph.nodes)
