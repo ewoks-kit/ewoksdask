@@ -3,7 +3,7 @@ https://docs.dask.org/en/latest/scheduler-overview.html
 """
 
 import json
-from typing import Optional
+from typing import List, Optional
 from dask.distributed import Client
 from dask.threaded import get as multithreading_scheduler
 from dask.multiprocessing import get as multiprocessing_scheduler
@@ -55,7 +55,9 @@ def convert_graph(ewoksgraph, **execute_options):
 def execute_graph(
     graph,
     scheduler=None,
+    inputs: Optional[List[dict]] = None,
     results_of_all_nodes: Optional[bool] = False,
+    outputs: Optional[List[dict]] = None,
     load_options: Optional[dict] = None,
     **execute_options
 ):
@@ -66,6 +68,8 @@ def execute_graph(
         raise RuntimeError("Dask can only execute DAGs")
     if ewoksgraph.has_conditional_links:
         raise RuntimeError("Dask cannot handle conditional links")
+    if inputs:
+        ewoksgraph.update_default_inputs(inputs)
     daskgraph = convert_graph(ewoksgraph, **execute_options)
 
     if results_of_all_nodes:
