@@ -12,8 +12,9 @@ from dask import get as sequential_scheduler
 from ewokscore import load_graph
 from ewokscore.inittask import instantiate_task
 from ewokscore.inittask import add_dynamic_inputs
-from ewokscore.graph import ewoks_jsonload_hook
+from ewokscore.graph.serialize import ewoks_jsonload_hook
 from ewokscore.node import get_node_label
+from ewokscore.graph import analysis
 
 
 def execute_task(execinfo, *inputs):
@@ -37,7 +38,7 @@ def execute_task(execinfo, *inputs):
 def convert_graph(ewoksgraph, **execute_options):
     daskgraph = dict()
     for target_id, node_attrs in ewoksgraph.graph.nodes.items():
-        source_ids = tuple(ewoksgraph.predecessors(target_id))
+        source_ids = tuple(analysis.predecessors(ewoksgraph.graph, target_id))
         link_attrs = tuple(
             ewoksgraph.graph[source_id][target_id] for source_id in source_ids
         )
@@ -75,7 +76,7 @@ def execute_graph(
     if results_of_all_nodes:
         nodes = list(ewoksgraph.graph.nodes)
     else:
-        nodes = list(ewoksgraph.end_nodes())
+        nodes = list(analysis.end_nodes(ewoksgraph.graph))
 
     if scheduler is None:
         results = sequential_scheduler(daskgraph, nodes)
