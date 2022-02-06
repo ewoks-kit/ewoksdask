@@ -38,7 +38,7 @@ def execute_task(execinfo, *inputs):
 def convert_graph(ewoksgraph, **execute_options):
     daskgraph = dict()
     for target_id, node_attrs in ewoksgraph.graph.nodes.items():
-        source_ids = tuple(analysis.predecessors(ewoksgraph.graph, target_id))
+        source_ids = tuple(analysis.node_predecessors(ewoksgraph.graph, target_id))
         link_attrs = tuple(
             ewoksgraph.graph[source_id][target_id] for source_id in source_ids
         )
