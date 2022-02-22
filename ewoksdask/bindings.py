@@ -30,6 +30,7 @@ def execute_task(execute_options, *inputs):
         execute_options["node_attrs"],
         inputs=dynamic_inputs,
         varinfo=execute_options.get("varinfo"),
+        execinfo=execute_options.get("execinfo"),
     )
 
     task.execute()
