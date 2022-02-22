@@ -24,8 +24,8 @@ def execute_task(execinfo, *inputs):
     for source_results, link_attrs in zip(inputs, execinfo["link_attrs"]):
         add_dynamic_inputs(dynamic_inputs, link_attrs, source_results)
     task = instantiate_task(
+        execinfo["node_id"],
         execinfo["node_attrs"],
-        node_id=execinfo["node_id"],
         inputs=dynamic_inputs,
         varinfo=execinfo["varinfo"],
     )
@@ -42,7 +42,7 @@ def convert_graph(ewoksgraph, **execute_options):
         link_attrs = tuple(
             ewoksgraph.graph[source_id][target_id] for source_id in source_ids
         )
-        node_label = get_node_label(node_attrs, node_id=target_id)
+        node_label = get_node_label(target_id, node_attrs)
         execute_options["node_id"] = target_id
         execute_options["node_label"] = node_label
         execute_options["node_attrs"] = node_attrs
