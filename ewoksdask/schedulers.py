@@ -3,6 +3,14 @@ from dask_jobqueue import SLURMCluster
 
 
 def local_scheduler(**kw):
+    """
+    :param n_worker:
+    :param processes: True by default
+    :param threads_per_worker:
+    :param scheduler_port:
+    :param dashboard_address:
+    :param worker_dashboard_address:
+    """
     # Run this on any machine
     kw.setdefault("n_workers", 1)
 
@@ -14,6 +22,15 @@ def local_scheduler(**kw):
 
 
 def slurm_scheduler(**kw):
+    """
+    :param address:
+    :param n_workers:
+    :param minimum_jobs:
+    :param maximum_jobs:
+    :param cores:
+    :param processes:
+    :param memory:
+    """
     # Run this on slurm-access
     # Parameters for each execute_graph:
     kw.setdefault("project", "esrftaskgraph")
