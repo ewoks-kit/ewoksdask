@@ -111,7 +111,7 @@ def _execute_graph(
         )
 
 
-@execute_graph_decorator
+@execute_graph_decorator(binding="dask")
 def execute_graph(
     graph,
     inputs: Optional[List[dict]] = None,
