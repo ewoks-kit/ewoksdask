@@ -23,8 +23,17 @@ def execute_task(execute_options, *inputs):
     execute_options = json.loads(execute_options, object_pairs_hook=ewoks_jsonload_hook)
 
     dynamic_inputs = dict()
-    for source_results, link_attrs in zip(inputs, execute_options["link_attrs"]):
-        add_dynamic_inputs(dynamic_inputs, link_attrs, source_results)
+    target_id = execute_options["node_id"]
+    for source_id, source_results, link_attrs in zip(
+        execute_options["source_ids"], inputs, execute_options["link_attrs"]
+    ):
+        add_dynamic_inputs(
+            dynamic_inputs,
+            link_attrs,
+            source_results,
+            source_id=source_id,
+            target_id=target_id,
+        )
     task = instantiate_task(
         execute_options["node_id"],
         execute_options["node_attrs"],
@@ -50,6 +59,7 @@ def convert_graph(ewoksgraph, **execute_options):
         execute_options["node_label"] = node_label
         execute_options["node_attrs"] = node_attrs
         execute_options["link_attrs"] = link_attrs
+        execute_options["source_ids"] = source_ids
         # Note: the execute_options is serialized to prevent dask
         #       from interpreting node names as task results
         daskgraph[target_id] = (execute_task, json.dumps(execute_options)) + source_ids
