@@ -16,5 +16,5 @@ pytest --pyargs ewoksdask.tests
 
 ## Documentation
 
-https://workflow.gitlab-pages.esrf.fr/ewoks/ewoksdask/
+https://ewoksdask.readthedocs.io/
 
