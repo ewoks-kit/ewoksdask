@@ -22,7 +22,7 @@ from ewokscore.graph import TaskGraph
 from ewokscore import events
 
 
-def execute_task(execute_options, *inputs):
+def _execute_task(execute_options, *inputs):
     execute_options = json.loads(execute_options, object_pairs_hook=ewoks_jsonload_hook)
 
     dynamic_inputs = dict()
@@ -50,7 +50,7 @@ def execute_task(execute_options, *inputs):
     return task.output_transfer_data
 
 
-def convert_graph(ewoksgraph, **execute_options):
+def _create_dask_graph(ewoksgraph, **execute_options) -> dict:
     daskgraph = dict()
     for target_id, node_attrs in ewoksgraph.graph.nodes.items():
         source_ids = tuple(analysis.node_predecessors(ewoksgraph.graph, target_id))
@@ -65,11 +65,11 @@ def convert_graph(ewoksgraph, **execute_options):
         execute_options["source_ids"] = source_ids
         # Note: the execute_options is serialized to prevent dask
         #       from interpreting node names as task results
-        daskgraph[target_id] = (execute_task, json.dumps(execute_options)) + source_ids
+        daskgraph[target_id] = (_execute_task, json.dumps(execute_options)) + source_ids
     return daskgraph
 
 
-def execute_dask_graph(
+def _execute_dask_graph(
     daskgraph,
     node_ids: List[NodeIdType],
     scheduler: Union[dict, str, None, Client] = None,
@@ -115,11 +115,11 @@ def _execute_graph(
         if ewoksgraph.has_conditional_links:
             raise RuntimeError("Dask cannot handle conditional links")
 
-        daskgraph = convert_graph(ewoksgraph, varinfo=varinfo, execinfo=execinfo)
+        daskgraph = _create_dask_graph(ewoksgraph, varinfo=varinfo, execinfo=execinfo)
         outputs = graph_io.parse_outputs(ewoksgraph.graph, outputs)
         node_ids = list(analysis.topological_sort(ewoksgraph.graph))
 
-        result = execute_dask_graph(
+        result = _execute_dask_graph(
             daskgraph,
             node_ids,
             scheduler=scheduler,
