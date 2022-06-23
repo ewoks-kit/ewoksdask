@@ -1,6 +1,4 @@
-"""
-https://docs.dask.org/en/latest/scheduler-overview.html
-"""
+# https://docs.dask.org/en/latest/scheduler-overview.html
 
 import json
 from typing import Any, Dict, List, Optional, Union
