@@ -12,7 +12,7 @@ Install requirements
 
 .. code:: bash
 
-    python -m pip install ewoksdask
+    python3 -m pip install ewoksdask
 
 Execute a workflow
 
@@ -26,8 +26,8 @@ Run the tests
 
 .. code:: bash
 
-    python -m pip install ewoksdask[test]
-    pytest --pyargs ewoksdask.tests
+    python3 -m pip install ewoksdask[test]
+    python3 -m pytest --pyargs ewoksdask.tests
 
 Documentation
 -------------

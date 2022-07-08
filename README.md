@@ -5,13 +5,13 @@
 ## Install
 
 ```bash
-python -m pip install ewoksdask[test]
+python3 -m pip install ewoksdask[test]
 ```
 
 ## Test
 
 ```bash
-pytest --pyargs ewoksdask.tests
+python3 -m pytest --pyargs ewoksdask.tests
 ```
 
 ## Documentation
