@@ -2,6 +2,8 @@
 
 import json
 from typing import Any, Dict, List, Optional, Union
+
+import dask
 from dask.distributed import Client
 from dask.threaded import get as multithreading_scheduler
 from dask.multiprocessing import get as multiprocessing_scheduler
@@ -79,6 +81,9 @@ def _execute_dask_graph(
         results = sequential_scheduler(daskgraph, node_ids, **scheduler_options)
     elif scheduler == "multiprocessing":
         # num_workers: CPU_COUNT by default
+        scheduler_options = dict(scheduler_options)
+        context = scheduler_options.pop("context", "spawn")
+        dask.config.set({"multiprocessing.context": context})
         results = multiprocessing_scheduler(daskgraph, node_ids, **scheduler_options)
     elif scheduler == "multithreading":
         # num_workers: CPU_COUNT by default
