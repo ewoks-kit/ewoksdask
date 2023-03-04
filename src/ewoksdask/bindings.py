@@ -140,7 +140,7 @@ def _execute_graph(
         return output_values
 
 
-@execute_graph_decorator(binding="dask")
+@execute_graph_decorator(engine="dask")
 def execute_graph(
     graph,
     inputs: Optional[List[dict]] = None,
