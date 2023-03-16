@@ -89,7 +89,7 @@ def _execute_dask_graph(
         # num_workers: CPU_COUNT by default
         results = multithreading_scheduler(daskgraph, node_ids, **scheduler_options)
     elif scheduler == "cluster":
-        # n_worker: n worker with m threads (n_worker= n * m)
+        # n_workers: n workers with m threads
         with Client(**scheduler_options) as client:
             results = client.get(daskgraph, node_ids)
     elif isinstance(scheduler, str):
