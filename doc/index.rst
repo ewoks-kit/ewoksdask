@@ -35,4 +35,5 @@ Documentation
 .. toctree::
     :maxdepth: 2
 
+    parallel
     api

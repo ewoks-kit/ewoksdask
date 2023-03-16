@@ -4,7 +4,7 @@ from dask_jobqueue import SLURMCluster
 
 def local_scheduler(**kw):
     """
-    :param n_worker:
+    :param n_workers:
     :param processes: True by default
     :param threads_per_worker:
     :param scheduler_port:
