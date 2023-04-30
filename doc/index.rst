@@ -1,4 +1,4 @@
-ewoksdask |release|
+ewoksdask |version|
 ===================
 
 *ewoksdask* provides distributed task scheduling for `ewoks <https://ewoks.readthedocs.io/>`_ workflows.
