@@ -47,7 +47,7 @@ def _execute_task(execute_options, *inputs):
 
     task.execute()
 
-    return task.output_transfer_data
+    return task.get_output_transfer_data()
 
 
 def _create_dask_graph(ewoksgraph, **execute_options) -> dict:
