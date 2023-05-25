@@ -1,4 +1,5 @@
-# Parallel execution
+Parallel execution
+==================
 
 Scheduler options for parallel execution can be provided when executing a workflow
 
@@ -21,7 +22,8 @@ The different schedulers are
     * `processes`: subprocesses instead of threads
  * `127.0.0.1:40331`: remote scheduler
 
-## Remote scheduler
+Remote scheduler
+----------------
 
 Start a scheduler (+ workers) on any host
 
@@ -30,7 +32,8 @@ Start a scheduler (+ workers) on any host
     from ewoksdask.clusters import local_scheduler
     cluster = local_scheduler(n_workers=5)
 
-### Separate processes
+Separate processes
+++++++++++++++++++
 
 Start a scheduler on any host
 
@@ -46,7 +49,8 @@ Add workers to a scheduler with 4 cores each
     dask worker 127.0.0.1:8786 --nprocs 4
     dask worker 127.0.0.1:8786 --nprocs 4
 
-### Slurm scheduler
+Slurm scheduler
++++++++++++++++
 
 Start a scheduler on a Slurm submitter host (spawns one Slurm job for each worker)
 
