@@ -10,6 +10,8 @@ build_sdist:
 
 test_sdist-3.9:
   extends: .test_sdist-3.9
+  variables:
+    PYTEST_WARNINGS: "-W error -W ignore::RuntimeWarning:networkx.utils.backends" # networkx #7372
 
 test_sdist-3.8-win:
   extends: .test_sdist-3.8-win
