@@ -3,7 +3,7 @@ ewoksdask |version|
 
 *ewoksdask* provides distributed task scheduling for `ewoks <https://ewoks.readthedocs.io/>`_ workflows.
 
-*ewoksdask* has been developed by the `Software group <http://www.esrf.eu/Instrumentation/software>`_ of the `European Synchrotron <https://www.esrf.eu/>`_.
+*ewoksdask* has been developed by the `Software group <http://www.esrf.fr/Instrumentation/software>`_ of the `European Synchrotron <https://www.esrf.fr/>`_.
 
 Getting started
 ---------------
@@ -29,11 +29,8 @@ Run the tests
     pip install ewoksdask[test]
     pytest --pyargs ewoksdask.tests
 
-Documentation
--------------
-
 .. toctree::
-    :maxdepth: 2
+    :hidden:
 
     parallel
     api
