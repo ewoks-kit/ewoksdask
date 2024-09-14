@@ -13,7 +13,7 @@ from ewokscore import load_graph
 from ewokscore import execute_graph_decorator
 from ewokscore.inittask import instantiate_task
 from ewokscore.inittask import add_dynamic_inputs
-from ewokscore.graph.serialize import ewoks_jsonload_hook
+from ewokscore.graph.serialize import json_load
 from ewokscore.node import NodeIdType
 from ewokscore.node import get_node_label
 from ewokscore.graph import analysis
@@ -23,7 +23,7 @@ from ewokscore import events
 
 
 def _execute_task(execute_options, *inputs):
-    execute_options = json.loads(execute_options, object_pairs_hook=ewoks_jsonload_hook)
+    execute_options = json_load(execute_options)
 
     dynamic_inputs = dict()
     target_id = execute_options["node_id"]
