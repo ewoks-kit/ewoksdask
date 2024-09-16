@@ -2,6 +2,12 @@
 
 ## (unreleased)
 
+## 0.1.4
+
+Bug fixes:
+
+- Remove deprecated ewoks_jsonload_hook
+
 ## 0.1.3
 
 Bug fixes:
