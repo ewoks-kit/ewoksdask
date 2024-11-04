@@ -43,7 +43,7 @@ def _execute_task(execute_options, *inputs):
         inputs=dynamic_inputs,
         varinfo=execute_options.get("varinfo"),
         execinfo=execute_options.get("execinfo"),
-        profile_directory=execute_options.get("profile_directory"),
+        task_options=execute_options.get("task_options"),
     )
 
     task.execute()
@@ -110,7 +110,7 @@ def _execute_graph(
     merge_outputs: Optional[bool] = True,
     varinfo: Optional[dict] = None,
     execinfo: Optional[dict] = None,
-    profile_directory: Optional[str] = None,
+    task_options: Optional[dict] = None,
     scheduler: Union[dict, str, None, Client] = None,
     scheduler_options: Optional[dict] = None,
 ) -> Dict[NodeIdType, Any]:
@@ -124,7 +124,7 @@ def _execute_graph(
             ewoksgraph,
             varinfo=varinfo,
             execinfo=execinfo,
-            profile_directory=profile_directory,
+            task_options=task_options,
         )
         outputs = graph_io.parse_outputs(ewoksgraph.graph, outputs)
         node_ids = list(analysis.topological_sort(ewoksgraph.graph))
