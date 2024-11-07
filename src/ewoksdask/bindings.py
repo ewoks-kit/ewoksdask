@@ -43,6 +43,7 @@ def _execute_task(execute_options, *inputs):
         inputs=dynamic_inputs,
         varinfo=execute_options.get("varinfo"),
         execinfo=execute_options.get("execinfo"),
+        task_options=execute_options.get("task_options"),
     )
 
     task.execute()
@@ -109,6 +110,7 @@ def _execute_graph(
     merge_outputs: Optional[bool] = True,
     varinfo: Optional[dict] = None,
     execinfo: Optional[dict] = None,
+    task_options: Optional[dict] = None,
     scheduler: Union[dict, str, None, Client] = None,
     scheduler_options: Optional[dict] = None,
 ) -> Dict[NodeIdType, Any]:
@@ -118,7 +120,12 @@ def _execute_graph(
         if ewoksgraph.has_conditional_links:
             raise RuntimeError("Dask cannot handle conditional links")
 
-        daskgraph = _create_dask_graph(ewoksgraph, varinfo=varinfo, execinfo=execinfo)
+        daskgraph = _create_dask_graph(
+            ewoksgraph,
+            varinfo=varinfo,
+            execinfo=execinfo,
+            task_options=task_options,
+        )
         outputs = graph_io.parse_outputs(ewoksgraph.graph, outputs)
         node_ids = list(analysis.topological_sort(ewoksgraph.graph))
 
