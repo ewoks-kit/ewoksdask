@@ -2,7 +2,13 @@
 
 ## Unreleased
 
-- Drop Python 3.6 and 3.7
+New features:
+
+- Add `ewoks.engines` entry point and implement the `WorkflowEngine` interface.
+
+Changes:
+
+- Drop support for Python 3.6 and 3.7.
 
 ## 1.0.0
 
