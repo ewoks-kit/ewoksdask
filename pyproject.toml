@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ewoksdask"
-version = "1.0.0"
+version = "2.0.0rc1"
 authors = [{ name = "ESRF", email = "dau-pydev@esrf.fr" }]
 description = "Dask binding for Ewoks"
 readme = { file = "README.md", content-type = "text/markdown" }
