@@ -152,9 +152,24 @@ def execute_graph(
     graph,
     inputs: Optional[List[dict]] = None,
     load_options: Optional[dict] = None,
-    **execute_options,
-):
+    outputs: Optional[List[dict]] = None,
+    merge_outputs: Optional[bool] = True,
+    varinfo: Optional[dict] = None,
+    execinfo: Optional[dict] = None,
+    task_options: Optional[dict] = None,
+    scheduler: Union[dict, str, None, Client] = None,
+    scheduler_options: Optional[dict] = None,
+) -> Dict[NodeIdType, Any]:
     if load_options is None:
         load_options = dict()
     ewoksgraph = load_graph(graph, inputs=inputs, **load_options)
-    return _execute_graph(ewoksgraph, **execute_options)
+    return _execute_graph(
+        ewoksgraph,
+        outputs=outputs,
+        merge_outputs=merge_outputs,
+        varinfo=varinfo,
+        execinfo=execinfo,
+        task_options=task_options,
+        scheduler=scheduler,
+        scheduler_options=scheduler_options,
+    )

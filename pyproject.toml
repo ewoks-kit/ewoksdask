@@ -16,7 +16,7 @@ classifiers = [
 ]
 requires-python = ">=3.8"
 dependencies = [
-    "ewokscore >=1.0.0",
+    "ewokscore >=2.0.0rc1",
     "dask[distributed] >=2021.3.0",
     "dask-jobqueue >=0.7.3",
 ]
@@ -47,3 +47,6 @@ where = ["src"]
 
 [tool.coverage.run]
 omit = ['*/tests/*']
+
+[project.entry-points."ewoks.engines"]
+"dask" = "ewoksdask.engine:DaskWorkflowEngine"
