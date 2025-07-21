@@ -32,5 +32,5 @@ Run the tests
 .. toctree::
     :hidden:
 
-    parallel
-    api
+    howtoguides
+    reference

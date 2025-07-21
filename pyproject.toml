@@ -19,6 +19,7 @@ dependencies = [
     "ewokscore >=2.0.0rc1",
     "dask[distributed] >=2021.3.0",
     "dask-jobqueue >=0.7.3",
+    "sphinx-argparse",
 ]
 
 [project.urls]
@@ -47,6 +48,9 @@ where = ["src"]
 
 [tool.coverage.run]
 omit = ['*/tests/*']
+
+[project.scripts]
+ewoksdask = "ewoksdask.__main__:main"
 
 [project.entry-points."ewoks.engines"]
 "dask" = "ewoksdask.engine:DaskWorkflowEngine"
