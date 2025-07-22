@@ -7,6 +7,7 @@
 New features:
 
 - Add `ewoks.engines` entry point and implement the `WorkflowEngine` interface.
+- Add `ewoksdask local` and `ewoksdask slurm` CLI to start a Dask cluster (Local or SLURM).
 
 Changes:
 

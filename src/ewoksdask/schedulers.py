@@ -11,7 +11,6 @@ def local_scheduler(**kw):
     :param dashboard_address:
     :param worker_dashboard_address:
     """
-    # Run this on any machine
     kw.setdefault("n_workers", 1)
 
     cluster = LocalCluster(**kw)
@@ -29,18 +28,23 @@ def slurm_scheduler(**kw):
     :param maximum_jobs:
     :param cores:
     :param processes:
+    :param gpus:
     :param memory:
+    :param queue:
     """
-    # Run this on slurm-access
-    # Parameters for each execute_graph:
-    kw.setdefault("project", "esrftaskgraph")
     kw.setdefault("walltime", "01:00:00")
     kw.setdefault("cores", 2)
     kw.setdefault("processes", 1)
-    kw.setdefault("memory", "1GB")
+    kw.setdefault("memory", "8GB")
+    job_extra_directives = kw.setdefault("job_extra_directives", list())
+
     minimum_jobs = kw.pop("minimum_jobs", 0)
     maximum_jobs = kw.pop("maximum_jobs", 0)
     kw.setdefault("n_workers", int(not maximum_jobs))
+
+    gpus = kw.pop("gpus", 0)
+    if gpus:
+        job_extra_directives.append(f"--gres=gpu:{gpus}")
 
     cluster = SLURMCluster(**kw)
     if maximum_jobs:
