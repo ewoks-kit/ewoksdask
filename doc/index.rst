@@ -10,13 +10,13 @@ Getting started
 
 Install requirements
 
-.. code:: bash
+.. code-block:: bash
 
     pip install ewoksdask
 
 Execute a workflow
 
-.. code:: python
+.. code-block:: python
 
     from ewoksdask import execute_graph
 
@@ -24,7 +24,7 @@ Execute a workflow
 
 Run the tests
 
-.. code:: bash
+.. code-block:: bash
 
     pip install ewoksdask[test]
     pytest --pyargs ewoksdask.tests
