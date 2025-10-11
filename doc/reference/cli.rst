@@ -1,5 +1,5 @@
-Ewoksdask commands reference
-============================
+CLI reference
+=============
 
 ewoksdask local
 ---------------

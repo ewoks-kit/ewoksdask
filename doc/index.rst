@@ -32,5 +32,5 @@ Run the tests
 .. toctree::
     :hidden:
 
-    howtoguides
-    reference
+    howtoguides/index
+    reference/index
