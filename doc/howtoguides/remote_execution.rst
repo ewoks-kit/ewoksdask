@@ -1,7 +1,7 @@
 Remote execution
 ================
 
-Workflows can be executed on a *Dask cluster* started as an external service.
+Workflows can be executed on a *Dask cluster* started as an **external service**.
 
 Below is an example of executing a workflow with two independent nodes.
 Since the nodes are not connected, they can run in parallel:
@@ -32,8 +32,8 @@ Since the nodes are not connected, they can run in parallel:
 
 The scheduler parameter is the address of a *Dask scheduler*.
 
-Local workers
--------------
+Local scheduler
+---------------
 
 You can start a local scheduler with multiple workers using the following command:
 
@@ -59,8 +59,8 @@ More configuration options can be found in the `Dask documentation <https://dist
 
 The *dashboard* provides detailed real-time information about running jobs and worker activity.
 
-Remote workers
---------------
+Distributed scheduler
+---------------------
 
 To set up a distributed cluster, start the scheduler on a remote machine:
 
@@ -72,7 +72,7 @@ Example output:
 
 .. code:: bash
 
-    Scheduler at:   tcp://192.168.1.47:8786
+    Scheduler at:  tcp://192.168.1.47:8786
     dashboard at:  http://192.168.1.47:8787/status
 
 Next, connect workers to this scheduler. The example below adds 3 workers, each with
@@ -108,4 +108,4 @@ This command will:
   - 64GB of RAM
 
 Refer to the Dask `JobQueue SlurmCluster documentation <https://jobqueue.dask.org/en/latest/generated/dask_jobqueue.SLURMCluster.html>`_
-for more configuration options.
+for more scheduler configuration options.

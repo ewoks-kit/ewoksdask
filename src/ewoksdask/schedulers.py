@@ -1,3 +1,5 @@
+"""Schedulers with an address and status dashboard."""
+
 from dask.distributed import LocalCluster
 from dask_jobqueue import SLURMCluster
 

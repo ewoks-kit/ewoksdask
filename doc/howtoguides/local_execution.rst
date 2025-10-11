@@ -2,12 +2,13 @@ Local execution
 ===============
 
 Dask offers several `scheduler options <https://docs.dask.org/en/latest/scheduler-overview.html>`_
-that allow workflow execution without requiring external services. These include:
+that allow workflow execution **without requiring external services**. These include:
 
 - **Sequential**: Tasks are executed one after another, in a single thread.
 - **Multi-threading**: Tasks are executed concurrently in multiple threads within the same process.
 - **Multi-processing**: Tasks are executed concurrently in separate subprocesses of the current process.
-- **Cluster**: A temporary Dask cluster is created for the duration of the workflow execution.
+- **Local Cluster**: Tasks are executed by a Dask cluster started in the current process.
+- **Slurm Cluster**: Tasks are executed by a SLurm cluster started in the current process.
 
 Example Workflow
 -----------------
@@ -89,11 +90,11 @@ By default:
 
 See the `Python multiprocessing docs <https://docs.python.org/3/library/multiprocessing.html#contexts-and-start-methods>`_ for details on contexts.
 
-Cluster
--------
+Local cluster
+-------------
 
-Creates a temporary local Dask cluster with the specified number of workers.
-This example completes in ~10 seconds using two workers:
+Creates a temporary local Dask cluster with the specified number of workers for the duration
+of the workflow execution. This example completes in ~10 seconds using two workers:
 
 .. code:: python
 
@@ -103,3 +104,39 @@ This example completes in ~10 seconds using two workers:
 
 Additional cluster configuration options are available in the
 `Dask distributed.Client documentation <https://docs.dask.org/en/stable/futures.html?highlight=client#distributed.Client>`_.
+
+In case the same cluster should be used by multiple workflows (provides a status dashboard as well)
+
+.. code:: python
+
+    from ewoksdask.schedulers import local_scheduler
+
+    cluster = local_scheduler(n_workers=2)
+
+    result = execute_graph(
+        workflow, inputs=inputs, scheduler=cluster.scheduler_address
+    )
+
+Slurm cluster
+-------------
+
+A Slurm cluster with status dashboard can be instantiated in the same process that executes workflows
+
+.. code:: python
+
+    from ewoksdask.schedulers import slurm_scheduler
+
+    cluster = slurm_scheduler(
+        queue="gpu",
+        walltime="00:20:00",
+        memory="256GB",
+        cores=16,
+        job_extra_directives=["--gres=gpu:1"]
+    )
+
+    result = execute_graph(
+        workflow, inputs=inputs, scheduler=cluster.scheduler_address
+    )
+
+Refer to the Dask `JobQueue SlurmCluster documentation <https://jobqueue.dask.org/en/latest/generated/dask_jobqueue.SLURMCluster.html>`_
+for more scheduler configuration options.
