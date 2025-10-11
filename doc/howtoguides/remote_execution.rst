@@ -6,7 +6,7 @@ Workflows can be executed on a *Dask cluster* started as an **external service**
 Below is an example of executing a workflow with two independent nodes.
 Since the nodes are not connected, they can run in parallel:
 
-.. code:: python
+.. code-block:: python
 
     from ewoksdask import execute_graph
 
@@ -37,7 +37,7 @@ Local scheduler
 
 You can start a local scheduler with multiple workers using the following command:
 
-.. code:: bash
+.. code-block:: bash
 
     ewoksdask local --n-workers 5 --threads-per-worker 10
 
@@ -49,7 +49,7 @@ This example launches:
 
 - Allowing up to 50 parallel tasks
 
-.. code:: bash
+.. code-block:: bash
 
     Address: tcp://127.0.0.1:8786
     Dashboard: http://127.0.0.1:8787/status
@@ -64,13 +64,13 @@ Distributed scheduler
 
 To set up a distributed cluster, start the scheduler on a remote machine:
 
-.. code:: bash
+.. code-block:: bash
 
     dask scheduler
 
 Example output:
 
-.. code:: bash
+.. code-block:: bash
 
     Scheduler at:  tcp://192.168.1.47:8786
     dashboard at:  http://192.168.1.47:8787/status
@@ -78,7 +78,7 @@ Example output:
 Next, connect workers to this scheduler. The example below adds 3 workers, each with
 4 processes (totaling 12 concurrent tasks):
 
-.. code:: bash
+.. code-block:: bash
 
     dask worker 127.0.0.1:8786 --nprocs 4
     dask worker 127.0.0.1:8786 --nprocs 4
@@ -90,7 +90,7 @@ Slurm scheduler
 To use Dask with a Slurm-managed cluster, launch a scheduler from a *Slurm submitter node*
 (i.e., a machine with Slurm client utilities configured):
 
-.. code:: bash
+.. code-block:: bash
 
     ewoksdask slurm --minimum-jobs 3 --maximum-jobs 10 --cores=2 --memory=64GB --walltime="01:00:00" --queue=gpu --gpus=1 --log debug
 
