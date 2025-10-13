@@ -1,10 +1,11 @@
 import pytest
-from ewoksdask import execute_graph
-from ewokscore.tests.test_workflow_events import fetch_events
-from ewokscore.tests.test_workflow_events import run_succesfull_workfow
-from ewokscore.tests.test_workflow_events import run_failed_workfow
-from ewokscore.tests.test_workflow_events import assert_succesfull_workfow_events
 from ewokscore.tests.test_workflow_events import assert_failed_workfow_events
+from ewokscore.tests.test_workflow_events import assert_succesfull_workfow_events
+from ewokscore.tests.test_workflow_events import fetch_events
+from ewokscore.tests.test_workflow_events import run_failed_workfow
+from ewokscore.tests.test_workflow_events import run_succesfull_workfow
+
+from ewoksdask import execute_graph
 
 
 @pytest.mark.parametrize("scheduler", (None, "multithreading", "multiprocessing"))

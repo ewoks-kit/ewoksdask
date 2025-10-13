@@ -1,25 +1,28 @@
 # https://docs.dask.org/en/latest/scheduler-overview.html
 
 import json
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
+from typing import Dict
+from typing import List
+from typing import Optional
+from typing import Union
 
 import dask
-from dask.distributed import Client
-from dask.threaded import get as multithreading_scheduler
-from dask.multiprocessing import get as multiprocessing_scheduler
 from dask import get as sequential_scheduler
-
-from ewokscore import load_graph
+from dask.distributed import Client
+from dask.multiprocessing import get as multiprocessing_scheduler
+from dask.threaded import get as multithreading_scheduler
+from ewokscore import events
 from ewokscore import execute_graph_decorator
-from ewokscore.inittask import instantiate_task
-from ewokscore.inittask import add_dynamic_inputs
-from ewokscore.graph.serialize import json_load
-from ewokscore.node import NodeIdType
-from ewokscore.node import get_node_label
+from ewokscore import load_graph
+from ewokscore.graph import TaskGraph
 from ewokscore.graph import analysis
 from ewokscore.graph import graph_io
-from ewokscore.graph import TaskGraph
-from ewokscore import events
+from ewokscore.graph.serialize import json_load
+from ewokscore.inittask import add_dynamic_inputs
+from ewokscore.inittask import instantiate_task
+from ewokscore.node import NodeIdType
+from ewokscore.node import get_node_label
 
 
 def _execute_task(execute_options, *inputs):
