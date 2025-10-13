@@ -1,8 +1,11 @@
-from typing import Any, Optional, List, Union
+from typing import Any
+from typing import List
+from typing import Optional
+from typing import Union
 
 from dask.distributed import Client
-from ewokscore.engine_interface import WorkflowEngine
 from ewokscore.engine_interface import RawExecInfoType
+from ewokscore.engine_interface import WorkflowEngine
 
 from . import bindings
 

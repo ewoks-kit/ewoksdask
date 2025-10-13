@@ -31,9 +31,18 @@ Issues = "https://gitlab.esrf.fr/workflow/ewoks/ewoksdask/issues"
 Changelog = "https://gitlab.esrf.fr/workflow/ewoks/ewoksdask/-/blob/main/CHANGELOG.md"
 
 [project.optional-dependencies]
-dashboard = ["dask[diagnostics] >=2021.3.0"]
-test = ["pytest >=7"]
-dev = ["ewoksdask[test]", "black >=25", "flake8 >=4"]
+dashboard = [
+    "dask[diagnostics] >=2021.3.0",
+]
+test = [
+    "pytest >=7",
+]
+dev = [
+    "ewoksdask[test]",
+    "black >=25",
+    "flake8 >=4",
+    "isort",
+]
 doc = [
     "ewoksdask[test]",
     "sphinx >=4.5",
@@ -55,3 +64,7 @@ ewoksdask = "ewoksdask.__main__:main"
 
 [project.entry-points."ewoks.engines"]
 "dask" = "ewoksdask.engine:DaskWorkflowEngine"
+
+[tool.isort]
+profile = "black"
+force_single_line = "True"
