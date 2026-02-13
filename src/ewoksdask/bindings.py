@@ -9,7 +9,10 @@ from typing import Union
 
 import dask
 from dask import get as sequential_scheduler
+from dask.delayed import Delayed
 from dask.distributed import Client
+from dask.distributed import wait
+from dask.distributed.client import Future
 from dask.multiprocessing import get as multiprocessing_scheduler
 from dask.threaded import get as multithreading_scheduler
 from ewokscore import events
@@ -25,13 +28,13 @@ from ewokscore.node import NodeIdType
 from ewokscore.node import get_node_label
 
 
-def _execute_task(execute_options, *inputs):
-    execute_options = json_load(execute_options)
+def _execute_task(serialized_opts, *all_source_results: dict) -> dict:
+    execute_options = json_load(serialized_opts)
 
     dynamic_inputs = dict()
     target_id = execute_options["node_id"]
     for source_id, source_results, link_attrs in zip(
-        execute_options["source_ids"], inputs, execute_options["link_attrs"]
+        execute_options["source_ids"], all_source_results, execute_options["link_attrs"]
     ):
         add_dynamic_inputs(
             dynamic_inputs,
@@ -62,49 +65,106 @@ def _create_dask_graph(ewoksgraph, **execute_options) -> dict:
             ewoksgraph.graph[source_id][target_id] for source_id in source_ids
         )
         node_label = get_node_label(target_id, node_attrs)
-        execute_options["node_id"] = target_id
-        execute_options["node_label"] = node_label
-        execute_options["node_attrs"] = node_attrs
-        execute_options["link_attrs"] = link_attrs
-        execute_options["source_ids"] = source_ids
-        # Note: the execute_options is serialized to prevent dask
+
+        node_execute_options = dict(execute_options)
+        node_execute_options["node_id"] = target_id
+        node_execute_options["node_label"] = node_label
+        node_execute_options["node_attrs"] = node_attrs
+        node_execute_options["link_attrs"] = link_attrs
+        node_execute_options["source_ids"] = source_ids
+
+        # Note: the execute options are serialized to prevent dask
         #       from interpreting node names as task results
-        daskgraph[target_id] = (_execute_task, json.dumps(execute_options)) + source_ids
+        daskgraph[target_id] = (
+            _execute_task,
+            json.dumps(node_execute_options),
+        ) + source_ids
     return daskgraph
 
 
 def _execute_dask_graph(
-    daskgraph,
+    daskgraph: dict,
     node_ids: List[NodeIdType],
+    output_node_ids: List[NodeIdType],
     scheduler: Union[dict, str, None, Client] = None,
     scheduler_options: Optional[dict] = None,
 ) -> Dict[NodeIdType, Any]:
     if scheduler_options is None:
         scheduler_options = dict()
+
     if scheduler is None:
         results = sequential_scheduler(daskgraph, node_ids, **scheduler_options)
-    elif scheduler == "multiprocessing":
+        return dict(zip(node_ids, results))
+
+    if scheduler == "multiprocessing":
         # num_workers: CPU_COUNT by default
         scheduler_options = dict(scheduler_options)
         context = scheduler_options.pop("context", "spawn")
         dask.config.set({"multiprocessing.context": context})
         results = multiprocessing_scheduler(daskgraph, node_ids, **scheduler_options)
-    elif scheduler == "multithreading":
+        return dict(zip(node_ids, results))
+
+    if scheduler == "multithreading":
         # num_workers: CPU_COUNT by default
         results = multithreading_scheduler(daskgraph, node_ids, **scheduler_options)
-    elif scheduler == "cluster":
+        return dict(zip(node_ids, results))
+
+    if scheduler == "cluster":
         # n_workers: n workers with m threads
         with Client(**scheduler_options) as client:
-            results = client.get(daskgraph, node_ids)
-    elif isinstance(scheduler, str):
-        with Client(address=scheduler, **scheduler_options) as client:
-            results = client.get(daskgraph, node_ids)
-    elif isinstance(scheduler, Client):
-        results = client.get(daskgraph, node_ids)
-    else:
-        raise ValueError("Unknown scheduler")
+            return _submit_with_client(client, daskgraph, node_ids, output_node_ids)
 
-    return dict(zip(node_ids, results))
+    if isinstance(scheduler, str):
+        with Client(address=scheduler, **scheduler_options) as client:
+            return _submit_with_client(client, daskgraph, node_ids, output_node_ids)
+
+    if isinstance(scheduler, Client):
+        return _submit_with_client(client, daskgraph, node_ids, output_node_ids)
+
+    raise ValueError("Unknown scheduler")
+
+
+def _submit_with_client(
+    client: Client,
+    daskgraph,
+    node_ids: List[NodeIdType],
+    output_node_ids: List[NodeIdType],
+    has_resource_specifiers: bool = True,
+) -> Dict[NodeIdType, Any]:
+    if node_ids == output_node_ids and not has_resource_specifiers:
+        results = client.get(daskgraph, node_ids)
+        return dict(zip(node_ids, results))
+
+    futures: Dict[NodeIdType, Future] = {}
+    delayed: Dict[NodeIdType, Delayed] = {}
+    for node_id in node_ids:
+        task_tuple = daskgraph[node_id]
+        func, serialized_opts, *source_ids = task_tuple
+
+        # TODO: pass Delayed or Future instances to the new Delayed function?
+        delayed_results: List[Delayed] = [
+            delayed[source_id] for source_id in source_ids
+        ]
+        args = [serialized_opts] + delayed_results
+        delayed_task = dask.delayed(func)(*args)
+        delayed[node_id] = delayed_task
+
+        # TODO: resources are like task inputs:
+        #   - defaults in the node attrs
+        #   - can be overwritten when executing
+        node_attrs = json.loads(serialized_opts)["node_attrs"]
+        resources = node_attrs.get("resources", None)
+
+        future = client.compute(delayed_task, resources=resources)
+        futures[node_id] = future
+
+    all_futures = list(futures.values())
+    result_futures = [
+        future for node_id, future in futures.items() if node_id in output_node_ids
+    ]
+    results = client.gather(result_futures)
+    wait(all_futures)
+    return dict(zip(output_node_ids, results))
 
 
 def _execute_graph(
@@ -130,11 +190,13 @@ def _execute_graph(
             task_options=task_options,
         )
         outputs = graph_io.parse_outputs(ewoksgraph.graph, outputs)
+        output_node_ids = [output_item["id"] for output_item in outputs]
         node_ids = list(analysis.topological_sort(ewoksgraph.graph))
 
         result = _execute_dask_graph(
             daskgraph,
             node_ids,
+            output_node_ids,
             scheduler=scheduler,
             scheduler_options=scheduler_options,
         )
