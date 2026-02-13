@@ -24,11 +24,11 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://gitlab.esrf.fr/workflow/ewoks/ewoksdask/"
+Homepage = "https://github.com/ewoks-kit/ewoksdask/"
 Documentation = "https://ewoksdask.readthedocs.io/"
-Repository = "https://gitlab.esrf.fr/workflow/ewoks/ewoksdask/"
-Issues = "https://gitlab.esrf.fr/workflow/ewoks/ewoksdask/issues"
-Changelog = "https://gitlab.esrf.fr/workflow/ewoks/ewoksdask/-/blob/main/CHANGELOG.md"
+Repository = "https://github.com/ewoks-kit/ewoksdask/"
+Issues = "https://github.com/ewoks-kit/ewoksdask/issues"
+Changelog = "https://github.com/ewoks-kit/ewoksdask/blob/main/CHANGELOG.md"
 
 [project.optional-dependencies]
 dashboard = [
