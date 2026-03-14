@@ -79,28 +79,43 @@ def _execute_dask_graph(
     scheduler: Union[dict, str, None, Client] = None,
     scheduler_options: Optional[dict] = None,
 ) -> Dict[NodeIdType, Any]:
+    if scheduler is None:
+        scheduler = "multiprocessing"
+
     if scheduler_options is None:
         scheduler_options = dict()
-    if scheduler is None:
+
+    if scheduler == "sequential":
         results = sequential_scheduler(daskgraph, node_ids, **scheduler_options)
+
     elif scheduler == "multiprocessing":
         # num_workers: CPU_COUNT by default
         scheduler_options = dict(scheduler_options)
         context = scheduler_options.pop("context", "spawn")
-        dask.config.set({"multiprocessing.context": context})
-        results = multiprocessing_scheduler(daskgraph, node_ids, **scheduler_options)
+        _ = scheduler_options.setdefault("chunksize", 1)
+
+        with dask.config.set({"multiprocessing.context": context}):
+            results = multiprocessing_scheduler(
+                daskgraph, node_ids, **scheduler_options
+            )
+
     elif scheduler == "multithreading":
         # num_workers: CPU_COUNT by default
         results = multithreading_scheduler(daskgraph, node_ids, **scheduler_options)
+
     elif scheduler == "cluster":
         # n_workers: n workers with m threads
+        # threads_per_worker: m threads
         with Client(**scheduler_options) as client:
             results = client.get(daskgraph, node_ids)
+
     elif isinstance(scheduler, str):
         with Client(address=scheduler, **scheduler_options) as client:
             results = client.get(daskgraph, node_ids)
+
     elif isinstance(scheduler, Client):
         results = client.get(daskgraph, node_ids)
+
     else:
         raise ValueError("Unknown scheduler")
 

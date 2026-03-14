@@ -9,7 +9,9 @@ from ewokscore.tests.test_workflow_events import sqlite_path  # noqa F401
 from ewoksdask import execute_graph
 
 
-@pytest.mark.parametrize("scheduler", (None, "multithreading", "multiprocessing"))
+@pytest.mark.parametrize(
+    "scheduler", (None, "sequential", "multithreading", "multiprocessing")
+)
 def test_succesfull_workfow(scheduler, sqlite_path):  # noqa F811
     database = sqlite_path / "ewoks_events.db"
     run_succesfull_workfow(database, execute_graph, scheduler=scheduler)
@@ -17,7 +19,9 @@ def test_succesfull_workfow(scheduler, sqlite_path):  # noqa F811
     assert_succesfull_workfow_events(events)
 
 
-@pytest.mark.parametrize("scheduler", (None, "multithreading", "multiprocessing"))
+@pytest.mark.parametrize(
+    "scheduler", (None, "sequential", "multithreading", "multiprocessing")
+)
 def test_failed_workfow(scheduler, sqlite_path):  # noqa F811
     database = sqlite_path / "ewoks_events.db"
     run_failed_workfow(database, execute_graph, scheduler=scheduler)

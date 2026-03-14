@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- The "multiprocessing" scheduler is the default instead of the "sequential" scheduler.
+
+### Fixed
+
+- Fix parallel execution for the "multiprocessing" scheduler.
+
 ## [2.0.2] - 2026-02-15
 
 ### Fixed
