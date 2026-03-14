@@ -6,7 +6,9 @@ from ewokscore.tests.utils.results import assert_execute_graph_default_result
 
 
 @pytest.mark.parametrize("graph_name", graph_names())
-@pytest.mark.parametrize("scheduler", (None, "multithreading", "multiprocessing"))
+@pytest.mark.parametrize(
+    "scheduler", (None, "sequential", "multithreading", "multiprocessing")
+)
 @pytest.mark.parametrize("scheme", (None, "json"))
 def test_examples(engine, graph_name, tmpdir, scheduler, scheme):
     graph, expected = get_graph(graph_name)
