@@ -49,7 +49,7 @@ Tasks are run one after another in a single thread.
 
 .. code-block:: python
 
-    result = execute_graph(example_workflow, scheduler=None)
+    result = execute_graph(example_workflow, scheduler="sequential")
 
 Multi-Threading
 ---------------
@@ -63,8 +63,8 @@ This example completes in ~10 seconds using two threads:
         workflow, scheduler="multithreading", scheduler_options={"num_workers": 2}
     )
 
-Multi-Processing
-----------------
+Multi-Processing (default)
+--------------------------
 
 Runs tasks in parallel using multiple subprocesses.
 This example also completes in ~10 seconds using two processes:
@@ -88,7 +88,8 @@ By default:
 
 - On Windows/macOS, the default context is *spawn*.
 
-See the `Python multiprocessing docs <https://docs.python.org/3/library/multiprocessing.html#contexts-and-start-methods>`_ for details on contexts.
+See the `Python multiprocessing docs <https://docs.python.org/3/library/multiprocessing.html#contexts-and-start-methods>`_
+for details on contexts.
 
 Local cluster
 -------------
@@ -99,7 +100,9 @@ of the workflow execution. This example completes in ~10 seconds using two worke
 .. code-block:: python
 
     result = execute_graph(
-        workflow, scheduler="cluster", scheduler_options={"n_workers": 2}
+        workflow,
+        scheduler="cluster",
+        scheduler_options={"n_workers": 4, "threads_per_worker": 1}
     )
 
 Additional cluster configuration options are available in the
@@ -111,7 +114,7 @@ In case the same cluster should be used by multiple workflows (provides a status
 
     from ewoksdask.schedulers import local_scheduler
 
-    cluster = local_scheduler(n_workers=2)
+    cluster = local_scheduler(n_workers=4, threads_per_worker=1)
 
     result = execute_graph(
         workflow, inputs=inputs, scheduler=cluster.scheduler_address
