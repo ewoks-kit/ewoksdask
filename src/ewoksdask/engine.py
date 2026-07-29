@@ -11,7 +11,6 @@ from . import bindings
 
 
 class DaskWorkflowEngine(WorkflowEngine):
-
     def execute_graph(
         self,
         graph: Any,
