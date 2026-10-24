@@ -16,7 +16,6 @@ from ewokscore import events
 from ewokscore import execute_graph_decorator
 from ewokscore import load_graph
 from ewokscore.graph import TaskGraph
-from ewokscore.graph import analysis
 from ewokscore.graph import graph_io
 from ewokscore.graph.serialize import json_load
 from ewokscore.inittask import add_dynamic_inputs
@@ -57,7 +56,7 @@ def _execute_task(execute_options, *inputs):
 def _create_dask_graph(ewoksgraph, **execute_options) -> dict:
     daskgraph = dict()
     for target_id, node_attrs in ewoksgraph.graph.nodes.items():
-        source_ids = tuple(analysis.node_predecessors(ewoksgraph.graph, target_id))
+        source_ids = tuple(ewoksgraph.analysis.node_predecessors(target_id))
         link_attrs = tuple(
             ewoksgraph.graph[source_id][target_id] for source_id in source_ids
         )
@@ -144,8 +143,10 @@ def _execute_graph(
             execinfo=execinfo,
             task_options=task_options,
         )
-        outputs = graph_io.parse_outputs(ewoksgraph.graph, outputs)
-        node_ids = list(analysis.topological_sort(ewoksgraph.graph))
+        outputs = graph_io.parse_outputs(
+            ewoksgraph.graph, outputs, graph_analysis=ewoksgraph.analysis
+        )
+        node_ids = list(ewoksgraph.analysis.topological_sort())
 
         result = _execute_dask_graph(
             daskgraph,
